@@ -10,7 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -23,8 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.seniordesign4.R;
-import com.example.seniordesign4.ui.login.LoginViewModel;
-import com.example.seniordesign4.ui.login.LoginViewModelFactory;
+import com.example.seniordesign4.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -123,6 +122,9 @@ public class LoginActivity extends AppCompatActivity {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, HomeActivity.class); // Start home page
+        startActivity(intent);
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
