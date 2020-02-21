@@ -19,7 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/connect_robot" />
+        tools:text="@string/connect_robot"
+        android:onClick="connectToRobot"/>
 
     <Button
         android:id="@+id/button2"
