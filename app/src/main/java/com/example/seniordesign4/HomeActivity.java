@@ -1,6 +1,7 @@
 package com.example.seniordesign4;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -30,6 +31,7 @@ import android.util.Log;
 public class HomeActivity extends AppCompatActivity {
 
     TextView mStatusBlueTv, mPairedTv;
+    ConstraintLayout buttonPanel;
 
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -48,6 +50,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     private EditText mOutEditText;
     private Button mSendButton;
+
+    private MessageHandler messageHandler;
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -70,9 +74,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        buttonPanel = findViewById(R.id.buttonPanel);
         mStatusBlueTv = findViewById(R.id.mStatusBlueTv);
         mPairedTv = findViewById(R.id.mPairedTv);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        messageHandler = new MessageHandler();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -92,21 +99,43 @@ public class HomeActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public void controlRobot(View view) {
-        Intent intent = new Intent(this, ControlActivity.class);
 
-        /* Use this to pass info to the next activity
-        EditText editText = (EditText) findViewById(R.id.);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        */
+    // Toggle view of control panel and send control mode message.
+    public void controlRobot(View view) {
+        /*
+        Intent intent = new Intent(this, ControlActivity.class);
+        //intent.putExtra("chatService", mChatService);
 
         startActivity(intent); // Start control page
+        */
+
+        if (buttonPanel.getVisibility() == View.VISIBLE) {
+            buttonPanel.setVisibility(View.INVISIBLE);
+            sendMessage(messageHandler.encodeJSON(MessageHandler.MODE, "auto", ""));
+        }
+
+        else {
+            buttonPanel.setVisibility(View.VISIBLE);
+            sendMessage(messageHandler.encodeJSON(MessageHandler.MODE, "manual", ""));
+        }
+
+
     }
 
-    public void connectToRobot(View view) {
+    public void Up(View view) {
+        sendMessage(messageHandler.encodeJSON(MessageHandler.CONTROL, "5", "0"));
+    }
 
-        // Bluetooth stuff here...
+    public void Right(View view) {
+        sendMessage(messageHandler.encodeJSON(MessageHandler.CONTROL, "0", "-5"));
+    }
+
+    public void Down(View view) {
+        sendMessage(messageHandler.encodeJSON(MessageHandler.CONTROL, "-5", "0"));
+    }
+
+    public void Left(View view) {
+        sendMessage(messageHandler.encodeJSON(MessageHandler.CONTROL, "0", "5"));
     }
 
 
@@ -192,7 +221,6 @@ public class HomeActivity extends AppCompatActivity {
             mChatService.write(send);
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -219,7 +247,7 @@ public class HomeActivity extends AppCompatActivity {
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
                     messageList.add(new messages.Message(counter++, writeMessage, "Me"));
-                    mPairedTv.setText("Sending: " + writeMessage);
+                    mPairedTv.setText("Sending:" + writeMessage);
                     break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
@@ -227,6 +255,7 @@ public class HomeActivity extends AppCompatActivity {
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //messageList.add(new messages.Message(counter++, readMessage, mConnectedDeviceName));
                     mStatusBlueTv.setText("Receiving: " + readMessage);
+                    showErrors(messageHandler.checkStatus(readMessage));
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -241,6 +270,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void showErrors(String messageString) {
+        if (messageString != null) {
+            showToast("Error: " + messageString);
+        }
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {

@@ -100,7 +100,9 @@ ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\A
 	android:name
 		ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\AndroidManifest.xml:15:19-53
 activity#com.example.seniordesign4.HomeActivity
-ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\AndroidManifest.xml:16:9-50
+ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\AndroidManifest.xml:16:9-86
+	android:screenOrientation
+		ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\AndroidManifest.xml:16:48-84
 	android:name
 		ADDED from C:\Users\bress\Desktop\Senior Design 2\SeniorDesignApp\app\src\main\AndroidManifest.xml:16:19-47
 activity#com.example.seniordesign4.ControlActivity
