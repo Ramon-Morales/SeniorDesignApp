@@ -11,7 +11,7 @@
         android:id="@+id/controlButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="636dp"
+        android:layout_marginBottom="664dp"
         android:onClick="controlRobot"
         android:text="@string/control_robot"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,8 +24,10 @@
         android:id="@+id/mStatusBlueTv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="512dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/controlButton" />
 
@@ -35,12 +37,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mStatusBlueTv"
-        app:layout_constraintVertical_bias="0.01" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -49,22 +52,6 @@
         android:orientation="horizontal">
 
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/edit_text_out"
-        android:layout_width="282dp"
-        android:layout_height="58dp"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="72dp"
-        android:layout_weight="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_send"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/scan"
@@ -78,44 +65,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/discoverable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="discoverable"
-        android:text="@string/discoverable"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/button_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="72dp"
-        android:text="@string/send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttonPanel"
         android:layout_width="409dp"
         android:layout_height="399dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="84dp"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="2dp">
 
         <Button
-            android:id="@+id/left_button2"
+            android:id="@+id/downButton"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:background="@drawable/button_round"
-            android:onClick="Left"
+            android:onClick="Down"
             android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -124,11 +88,11 @@
             app:layout_constraintVertical_bias="0.629" />
 
         <Button
-            android:id="@+id/right_button2"
+            android:id="@+id/upButton"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:background="@drawable/button_round"
-            android:onClick="Right"
+            android:onClick="Up"
             android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,11 +101,11 @@
             app:layout_constraintVertical_bias="0.166" />
 
         <Button
-            android:id="@+id/up_button2"
+            android:id="@+id/rightButton"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:background="@drawable/button_round"
-            android:onClick="Up"
+            android:onClick="Right"
             android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -151,11 +115,11 @@
             app:layout_constraintVertical_bias="0.398" />
 
         <Button
-            android:id="@+id/down_button2"
+            android:id="@+id/leftButton"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:background="@drawable/button_round"
-            android:onClick="Down"
+            android:onClick="Left"
             android:padding="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

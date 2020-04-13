@@ -34,6 +34,10 @@ public class MessageHandler {
     public static final int CONTROL = 1;
     public static final int STATUS = 2;
 
+    public static final int STUCK_ERROR = 0;
+    public static final int WEED_FULL_ERROR = 1;
+    public static final int BATTERY_LOW_ERROR = 2;
+
     private JSONObject obj;
 
     public MessageHandler() {
@@ -56,7 +60,7 @@ public class MessageHandler {
                     break;
                 case STATUS:
                     obj.put("type", "stat_msg");
-                    obj.put("error", msg1 + ":" + msg2);
+                    obj.put("data", msg1 + ":" + msg2);
                     break;
             }
 
@@ -69,22 +73,26 @@ public class MessageHandler {
     }
 
     // Receive errors 1 at a time and return the error message.
-    public String checkStatus(String msg) {
+    public int checkStatus(String msg) {
         try {
             obj = new JSONObject(msg);
 
-            String str = (String)obj.get("error");
+            String str = (String)obj.get("data");
             if (str != null) {
                 String[] arr = str.split(":");
-                if (arr[0].equals("stuck") || (arr[0].equals("weed") && Integer.parseInt(arr[1]) >= 95) || (arr[0].equals("battery") && Integer.parseInt(arr[1]) <= 5))
-                    return str;
+                if (arr[0].equals("stuck"))
+                    return STUCK_ERROR;
+                else if (arr[0].equals("weed") && Integer.parseInt(arr[1]) >= 95)
+                    return WEED_FULL_ERROR;
+                else if  (arr[0].equals("battery") && Integer.parseInt(arr[1]) <= 5)
+                    return BATTERY_LOW_ERROR;
                 else
-                    return null;
+                    return -1;
             }
             else
-                return null;
+                return -1;
         } catch (Exception e) {
-            return null;
+            return -1;
         }
 
         /*

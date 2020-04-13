@@ -2,8 +2,14 @@ package com.example.seniordesign4;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -26,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import android.util.Log;
+
+import org.json.JSONObject;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -50,6 +58,10 @@ public class HomeActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
     private EditText mOutEditText;
     private Button mSendButton;
+
+    private NotificationCompat.Builder builder;
+    private int notificationID = 0;
+    private JSONObject json;
 
     private MessageHandler messageHandler;
 
@@ -79,7 +91,14 @@ public class HomeActivity extends AppCompatActivity {
         mPairedTv = findViewById(R.id.mPairedTv);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        // Create a notification builder on channel "1" to send error notifications.
+        builder = new NotificationCompat.Builder(this, "1")
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
         messageHandler = new MessageHandler();
+        createNotificationChannel();
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -99,6 +118,26 @@ public class HomeActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+
+        Log.i("Channel", "Checking Android Version");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            Log.i("Channel", "Creating Notification Channel");
+
+            CharSequence name = "errorchannel";
+            String description = "Show errors from the robot";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("1", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     // Toggle view of control panel and send control mode message.
     public void controlRobot(View view) {
@@ -161,17 +200,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupChat() {
-        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
-        mOutEditText.setOnEditorActionListener(mWriteListener);
-        mSendButton = (Button) findViewById(R.id.button_send);
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                TextView view = (TextView) findViewById(R.id.edit_text_out);
-                String message = view.getText().toString();
-                sendMessage(message);
-            }
-        });
-
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(this, mHandler);
 
@@ -271,9 +299,36 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-    public void showErrors(String messageString) {
-        if (messageString != null) {
-            showToast("Error: " + messageString);
+    public void showErrors(int errorCode) {
+        if (errorCode != -1) {
+
+            String message;
+            Intent intent = new Intent(this, Error.class);
+
+            if (errorCode == MessageHandler.STUCK_ERROR) {
+                message = "The robot is stuck";
+            } else if (errorCode == MessageHandler.WEED_FULL_ERROR) {
+                message = "The robot's weed collector is full";
+            } else {
+                message = "The robot's battery is low";
+            }
+
+            showToast(message + "!");
+            intent.putExtra("errorMessage", "The following condition caused the robot to malfunction: " + message);
+            intent.putExtra("errorTitle", "The robot has had an error.");
+            intent.putExtra("id", notificationID);
+
+
+            builder.setContentTitle("Robot Error")
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+            // Display the notification.
+            notificationManager.notify(notificationID, builder.build());
+            notificationID++;
+
         }
     }
 
